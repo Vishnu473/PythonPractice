@@ -1,0 +1,3 @@
+Project Problem Statement: Advanced Contact Book / Personal Organizer
+
+"Develop a comprehensive personal organizer application. This application should allow users to manage contacts, create and track to-do lists, and schedule simple events. The program should be fully interactive via the command line, allowing users to add, view, update, and delete entries across all categories. It should also include features like searching, filtering, and potentially some statistical insights."
