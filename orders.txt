@@ -1,0 +1,22 @@
+
+Order ID: ORD20250727151207247509
+User: Vishnu
+Time: 2025-07-27 15:12:07
+Items:
+Burger - Starter - $99.0
+
+Total Amount: $99.00
+Order Amount after Discount: $96.03
+
+----------
+Order ID: ORD20250727152201975127
+User: Vishnu
+Time: 2025-07-27 15:22:01
+Items:
+Special Combo Biryani & Coke - $358.0
+
+Total Amount: $358.00
+Order Amount after Discount of 12: $315.04
+Payment Method opted: cod and Delivery Type: delivery
+
+----------

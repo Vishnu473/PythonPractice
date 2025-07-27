@@ -10,29 +10,33 @@ class Order:
         self.payment_method = payment_method
         self.delivery_type = delivery_type
 
+        self.discount = self.user.calculate_discount()
+
     def calculate_total(self):
         return sum(item.price for item in self.items)
+        
     
-    def generate_invoice(self):
-        discount = self.user.calculate_discount()
+    def __str__(self):
         total_amount = self.calculate_total()
-        order_amount = total_amount - (total_amount * discount / 100) if discount > 0 else total_amount
+        order_amount = total_amount - (total_amount * self.discount / 100) if self.discount > 0 else total_amount
 
-        invoice = f"Order ID: {self.order_id}\n"
+        invoice = "\n"
+        invoice += f"Order ID: {self.order_id}\n"
         invoice += f"User: {self.user.name}\n"
         invoice += f"Time: {self.time_stamp}\n"
         invoice += "Items:\n"
         for item in self.items:
-            invoice += str(item)
+            invoice += str(item)+"\n"
         invoice += f"\nTotal Amount: ${total_amount:.2f}\n"
-        invoice += f"Order Amount after Discount: ${order_amount:.2f}\n"
+        invoice += f"Order Amount after Discount of {self.discount}: ${order_amount:.2f}\n"
+        invoice += f"Payment Method opted: {self.payment_method} and Delivery Type: {self.delivery_type}\n"
         return invoice
     
     def print_invoice(self):
-        discount = self.user.calculate_discount()
         total_amount = self.calculate_total()
-        order_amount = total_amount - (total_amount * discount / 100) if discount > 0 else total_amount
+        order_amount = total_amount - (total_amount * self.discount / 100) if self.discount > 0 else total_amount
 
+        order_invoice = "----------------------------------" + "\n"
         order_invoice = f"Order ID: {self.order_id}" + "\n"
         order_invoice += f"Order booked by {self.user.name} at {self.time_stamp}. The ordered items are: " + "\n"
         order_invoice += "----------------------------------" + "\n"
@@ -40,7 +44,7 @@ class Order:
             order_invoice += str(item)
         order_invoice += "\n" + "----------------------------------"
         order_invoice += "\n"+f"Total Order amount for {len(self.items)} items - ${self.calculate_total()} /-"
-        order_invoice += "\n" + f"Discount applied: {discount}%"
+        order_invoice += "\n" + f"Discount applied: {self.discount}%"
         order_invoice += "\n" + f"Final Order amount after discount: ${order_amount:.2f} /-"
         order_invoice += "\n" + "----------------------------------"
         order_invoice += "\n" + f"Payment Method opted: {self.payment_method}"
@@ -57,7 +61,7 @@ class OrderLogger:
     @staticmethod
     def log_order(order):
         with open("orders.txt", "a") as file:
-            file.write(str(order) + "\n\n")
+            file.write(str(order) + "\n"+"----------")
         print("Order logged successfully.")
     
     @staticmethod

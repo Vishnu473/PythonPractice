@@ -21,26 +21,45 @@ class User: #discount of 1-3% is applied if min. order are greater than 50
 
     @staticmethod
     def validate_mobile_number(mobile_number):
-        if  len(mobile_number) == 10 and mobile_number.isdigit():
-            return True
-        raise ValueError("Invalid mobile number. It should be a 10-digit number.")
-        
+        try:
+            if  len(mobile_number) == 10 and mobile_number.isdigit():
+                return True
+        except ValueError:
+            print("Invalid mobile number. It should be a 10-digit number.")
+            return False
 
+
+    def place_order_from_wallet(self,order_amount,discount=None):
+        try:
+            if order_amount < 0:
+                    raise ValueError("Order amount cannot be negative")
+            if order_amount > self.wallet_balance:
+                raise ValueError("Insufficient wallet balance to place the order. Add money into wallet")
+            
+            if discount is None:
+                discount = self.calculate_discount()
+            
+            final_amount = order_amount - (order_amount * discount / 100)
+            self.__wallet_balance -= final_amount
+        
+            if discount > 0:
+                return f"Order placed successfully with a discount of {discount}%! Final amount paid: ₹{final_amount:.2f}"
+            return f"Order placed successfully! Amount paid: ₹{final_amount:.2f}"
+        except ValueError as e:
+            return f"Error placing order: {e}"
+    
     def place_order(self,order_amount,discount=None):
-        if order_amount < 0:
-                raise ValueError("Order amount cannot be negative")
-        if order_amount > self.wallet_balance:
-            raise ValueError("Insufficient wallet balance to place the order. Add money into wallet")
-        
-        if discount is None:
-            discount = self.calculate_discount()
-        
-        final_amount = order_amount - (order_amount * discount / 100)
-        self.__wallet_balance -= final_amount
-       
-        if discount > 0:
-            return f"Order placed successfully with a discount of {discount}%! Final amount paid: ₹{final_amount:.2f}"
-        return f"Order placed successfully! Amount paid: ₹{final_amount:.2f}"
+        try:
+            if order_amount < 0:
+                    raise ValueError("Order amount cannot be negative")
+            if discount is None:
+                discount = self.calculate_discount()
+            final_amount = order_amount - (order_amount * discount / 100)
+            if discount > 0:
+                return f"Order placed successfully with a discount of {discount}%! Final amount to be paid: ₹{final_amount:.2f}"
+            return f"Order placed successfully! Amount to be paid: ₹{final_amount:.2f}"
+        except ValueError as e:
+            return f"Error placing order: {e}"
         
     def discount_eligibility(self):
         if self.min_orders > 50:
@@ -52,11 +71,6 @@ class User: #discount of 1-3% is applied if min. order are greater than 50
             return randint(1,4)
         return 0
 
-    def deduct_money(self, amount):
-        if amount > self.wallet_balance:
-            raise ValueError("Insufficient balance.")
-        self.__wallet_balance -= amount
-
     
 class PremiumUser(User): #Guaranteed discount upto 10% from 3% if min_order > 10 else 1% - 3%
 
@@ -64,7 +78,7 @@ class PremiumUser(User): #Guaranteed discount upto 10% from 3% if min_order > 10
         super().__init__(name,mobile_number,wallet_balance,min_orders)
 
     def calculate_discount(self):
-        return randint(3,10) if self.min_orders > 10 else randint(1,3)
+        return randint(5,10) if self.min_orders > 10 else randint(1,3)
 
     def place_order(self, order_amount):
         discount = self.calculate_discount()
@@ -80,14 +94,9 @@ class CorporateUser(PremiumUser): #Guaranteed discount from 10 to 15% if a user 
         super().__init__(name,mobile_number,wallet_balance,min_orders)
         self.company = company
         self.user_wallet_id = user_wallet_id
-
-    def check_patnership(self):
-        if self.company.lower() in [c.lower() for c in self.corporate_list] and self.user_wallet_id[0:3] == self.company.upper()[0:3]:
-            return True
-        return False
     
     def calculate_discount(self):
-        if self.check_patnership():
+        if self.company in CorporateUser.corporate_list and self.user_wallet_id[0:3] == self.company.upper()[0:3]:
             return randint(10,15)
         return super().calculate_discount() 
     

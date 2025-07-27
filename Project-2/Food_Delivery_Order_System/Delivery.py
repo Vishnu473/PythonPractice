@@ -24,7 +24,7 @@ class HumanRider(Person, DeliveryAgent):
         DeliveryAgent.__init__(self, order, deliver_type, delivery_id)
 
     def deliver_order(self,order):
-        return f"Order {order.order_id} is being delivered by {self.name} (Human Rider). Delivery ID: {self.delivery_id}"
+        return f"Your Order - {order.order_id} will be delivered by: {self.name} (Human Rider). Can track your delivery using: {self.delivery_id}"
     
 
 class AutoBot(DeliveryAgent):
@@ -34,4 +34,4 @@ class AutoBot(DeliveryAgent):
         self.bot_id = bot_id
 
     def deliver_order(self, order):
-        return f"Order {order.order_id} is being delivered by {self.bot_id} (AutoBot). Delivery ID: {self.delivery_id}"
+        return f"Your Order - {order.order_id} will be delivered by: {self.bot_id} (Auto Bot). Can track your delivery using: {self.delivery_id}"
